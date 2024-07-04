@@ -1,0 +1,74 @@
+version: '3.9'
+
+networks:
+  internal_network:
+    driver: bridge
+
+services:
+  monolith:
+    build:
+      context: ./GreenCoom-Backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://monolith_db:5432/GreenComm
+      - SPRING_DATASOURCE_USERNAME=UserGreenComm
+      - SPRING_DATASOURCE_PASSWORD=123456
+    depends_on:
+      - monolith_db
+    networks:
+      - internal_network
+
+  monolith_db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: GreenComm
+      POSTGRES_USER: UserGreenComm
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - monolith_db_data:/var/lib/postgresql/data
+    networks:
+      - internal_network
+
+  microservice:
+    build:
+      context: ./Microservice-Publications
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://microservice_db:5432/Publication
+      - SPRING_DATASOURCE_USERNAME=UserGreenComm
+      - SPRING_DATASOURCE_PASSWORD=123456
+    depends_on:
+      - microservice_db
+    networks:
+      - internal_network
+
+  microservice_db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: Publication
+      POSTGRES_USER: UserGreenComm
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - microservice_db_data:/var/lib/postgresql/data
+    networks:
+      - internal_network
+
+  apigateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    depends_on:
+      - monolith
+      - microservice
+    networks:
+      - internal_network
+
+volumes:
+  monolith_db_data:
+  microservice_db_data:

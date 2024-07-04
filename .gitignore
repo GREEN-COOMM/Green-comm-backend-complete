@@ -1,1 +1,40 @@
-.idea
+# Gradle
+build/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+out/
+
+# Spring Boot
+spring-boot-*.jar
+spring-boot-*.jar.original
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+
+# System Files
+.DS_Store
+Thumbs.db
